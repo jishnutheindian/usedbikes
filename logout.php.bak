@@ -1,0 +1,6 @@
+<?php
+require_once 'settings/class.user.php';
+$user_home = new USER();
+$user_home->logout();
+header("Location: index.php");exit; 
+?>

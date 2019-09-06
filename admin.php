@@ -1,0 +1,204 @@
+<?php
+session_start();
+require_once 'settings/class.user.php';
+$user_login = new USER();
+
+
+if($user_login->is_logged_in()=="")
+{
+	$user_login->redirect('index.php');
+}
+?>
+<!DOCTYPE html>
+<html>
+<title>Admin Panel</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+</style>
+<body class="w3-content" style="max-width:1200px">
+
+<!-- Sidebar/menu -->
+<nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
+  <div class="w3-container w3-display-container w3-padding-16">
+    <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+    <h3 class="w3-wide"><b>Used Bikes Pondicherry</b></h3>
+  </div>
+  <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold">
+ 
+ 
+
+    <div id="demoAcc" class="w3-bar-block w3-hide w3-padding-large w3-medium">
+	
+     
+   </div>
+
+  </div>
+ 
+</nav>
+<script>
+$(document).ready(function(){
+	$("#seller").click(function(){
+	 $("#m").val("");
+     $("#m").load("addseller.php");
+     $("#myModal").modal(); 
+    });
+    
+    $("#search").click(function(){
+     $("#searchmodal").modal(); 
+    });
+    $("#reset").click(function(){
+     $("#m").val("");
+     $("#m").load("resetpass.php");
+     $("#myModal").modal(); 
+    });
+	$("#setprice").click(function(){
+   $("#m").val("");
+     $("#m").load("setprice.php");
+     $("#myModal").modal();  
+    });
+	$("#accounts").click(function(){
+   $("#m").val("");
+     $("#m").load("accounts.php");
+     $("#myModal").modal();  
+    });
+    $("#partner").click(function(){
+ $("#m").val("");
+     $("#m").load("partner.php");
+     $("#myModal").modal();     });
+    $("#enquiry").click(function(){
+     $("#m").val("");
+     $("#m").load("addenquiry.php");
+     $("#myModal").modal(); 
+    });
+	 $("#buyer").click(function(){
+     $("#m").val("");
+     $("#m").load("addbuyer.php");
+     $("#myModal").modal(); 
+    });
+$("#showhint").keyup(function(){
+	 var val=$("#showhint").val();
+	 var str="value=" +val;
+	    if (val.length == 0) {
+			$("#showhint").val("");
+        return;
+      } else {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("searchid").innerHTML = this.responseText;
+            }
+        };
+        xmlhttp.open("GET", "searchajax.php?" + str, true);
+        xmlhttp.send();
+    }
+	});
+});
+</script>
+<!-- Top menu on small screens -->
+<header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+  <div class="w3-bar-item w3-padding-24 w3-wide">Hello Admin</div>
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right" onclick="w3_open()"><i class="fa fa-bars"></i></a>
+</header>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:250px">
+
+  <!-- Push down content on small screens -->
+  <div class="w3-hide-large" style="margin-top:83px"></div>
+  
+  <!-- Top header -->
+  <header class="w3-container w3-xlarge">
+    <p class="w3-left">Hello Admin</p>
+    <p class="w3-right">
+     
+	  <a id="reset"><i style="padding:15px;" class="glyphicon glyphicon-repeat">reset-password</i></a>
+	   <a href="logout.php"><i class="glyphicon glyphicon-log-out">logout</i></a>
+    </p> 
+  </header>
+<div class="w3-container w3-text-grey" id="jeans">
+    <p>Settings</p>
+  </div>
+
+  <!-- Product grid -->
+  <div class="w3-row w3-grayscale">
+   <button type="button" id="enquiry" class="btn btn-primary  btn-lg">Add Enquiry</button>
+   <button type="button" id="seller" class="btn btn-primary  btn-lg"> Add Seller </button>
+   <button type="button" id="search" class="btn btn-primary  btn-lg"> Search </button>
+   <button type="button" id="accounts" class="btn btn-primary  btn-lg"> Accounts </button>
+   <button type="button" id="partner" class="btn btn-primary  btn-lg"> Partner Accounts</button>
+   <button type="button" id="buyer" class="btn btn-primary  btn-lg"> Add Buyer</button>
+   <button type="button" id="setprice" class="btn btn-primary  btn-lg">Set Price</button>
+
+
+  </div>
+  <div id="content" style="padding:50px;">
+  <h4 style="align:centre;"> Welcome to Administration </h4>
+   </div> 
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+<!-- Modal content-->
+      <div class="modal-content">
+      <div id="m">
+
+	  </div>
+        <div class="modal-footer">
+          <br>
+		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div></div></div>
+
+  </body>
+
+   <div class="modal fade" id="searchmodal" role="dialog">
+    <div class="modal-dialog">
+<!-- Modal content-->
+      <div class="modal-content">
+     <div class="modal-header"><h3 style="align:right">
+      Advanced Searching Option	
+        <div class="modal-body" id="txtHint">
+      <form>
+	  <div style="padding:20px;">
+	   You can type vehicle No/Phone No/Name - You Will be shown the Suggestions
+</div>
+<div style="padding:20px;">
+Enter the details
+<input id="showhint" type="text">
+</form></h3>  
+          <h4 class="modal-title"></h4>
+        
+</div>
+
+<div id="searchid"><div>
+
+</div></div> 
+        <div class="modal-footer">
+          <br>
+		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div></div></div>
+</html>

@@ -1,0 +1,46 @@
+
+<?php
+session_start();
+require_once 'settings/class.user.php';
+
+$user_home = new USER();
+
+if(!$user_home->is_logged_in())
+{
+	header("Location: index.php");exit; 
+}
+
+$value=$_GET["value"];
+
+ $stmt = $user_home->runQuery("SELECT seller.sid,seller.vno,seller.phone,seller.sname,vehicle.vname FROM seller INNER JOIN vehicle ON vehicle.sid=seller.sid WHERE seller.vno LIKE '%{$value}%' OR seller.phone LIKE '%{$value}%'  OR seller.sname LIKE '%{$value}%' ");
+ $stmt->execute();
+ $row = $stmt->fetchAll();
+ class detail {
+	public $id;
+    public $name;
+    public $vid;
+	public $ph;
+    public $model;
+    public $type;
+  }
+
+
+ $i=0;
+foreach($row as $data) {
+	$all[$i]=new detail();
+     $all[$i]->type = "seller";
+	 $all[$i]->id = $data['sid'];
+	 $all[$i]->name = $data['sname'];
+	 $all[$i]->vid = $data['vno'];
+	 $all[$i]->ph = $data['phone'];
+	 $all[$i]->model = $data['vname'];
+    echo '<div class="col-sm-4"><div class="panel panel-default"><a href="details.php?id='. $all[$i]->id .'&type='.$all[$i]->type.'"><h4 style="text-align: center;"><p>Model:'.$all[$i]->model.'</p><p>Vehicle No:';
+echo $all[$i]->vid;
+echo'</p><p>Name:'.$all[$i]->name.'</p><p>Phone No:'.$all[$i]->ph.'</p><p>Type:'.$all[$i]->type.'</p></h4></div></div>';
+
+	 $i++;
+ }
+$i--;
+
+ 
+?>

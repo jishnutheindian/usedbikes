@@ -1,0 +1,69 @@
+<?php
+session_start();
+require_once 'settings/class.user.php';
+$ok=1;
+$user_home = new USER();
+$vno=$user_home->test_input($_POST["vno"]);
+$expense=$user_home->test_input($_POST["expense"]);
+$sname=$user_home->test_input($_POST["sname"]);
+$fname=$user_home->test_input($_POST["fname"]);
+$address=$user_home->test_input($_POST["address"]);
+$sphone=$user_home->test_input($_POST["ph1"]);
+$cphone=$user_home->test_input($_POST["ph2"]);
+$price=$user_home->test_input($_POST["price"]);
+$prooftype=$user_home->test_input($_POST["ptype"]);
+$proofno=$user_home->test_input($_POST["proof"]);
+$model=$user_home->test_input($_POST["model"]);
+$year=$user_home->test_input($_POST["vyear"]);
+$proof=array($prooftype,$proofno);
+$proof=serialize($proof);
+$cno=$user_home->test_input($_POST["cno"]);
+$eno=$user_home->test_input($_POST["eno"]);
+$spic=basename($_FILES["spic"]["name"]);
+$sid="";
+$yes="Y";
+
+ for($i=0;$i<strlen($vno);$i++)
+    { if($vno[$i]=="_")
+	  {$vno=substr($vno,0,$i);}
+    } 
+
+ 
+if($user_home->fileupload("users","spic")==0)
+{$ok=0;}
+else{$ok=1;exit;}
+
+	if($ok==0)
+    {  
+		 $stmt=$user_home->runQuery("INSERT INTO buyer (vno,bname,fname,address,phone,cphone,price,proof,image)                       VALUES(:vid,:sname,:fname,:address,:phone,:cphone,:price,:proof,:image)");
+
+      if($stmt->execute(array(":vid"=>$vno,":sname"=>$sname,":fname"=>$fname,":address"=>$address,":phone"=>$sphone,":cphone"=>$cphone,":price"=>$price,":proof"=>$proof,":image"=>$spic)))
+	   {      $sid=$user_home->lasdID();
+
+           $stmt=$user_home->runQuery("UPDATE vehicle SET bid=:bid,expense=:exp,sold_price=:sp,status=:st WHERE vno=:vno");
+         if($stmt->execute(array(":bid"=>$sid,":exp"=>$expense,":sp"=>$price,":st"=>$yes,":vno"=>$vno)))
+			{echo "ok"; exit;}
+		 else{ 
+		       $user_home->filedelete("users",$spic);
+		       $stmt=$user_home->runQuery("DELETE FROM buyer WHERE bid=:sid");
+               $stmt->execute(array(":sid"=>$sid));echo'Vehicle update error';
+		    }
+	   }
+	   else
+	   { $user_home->filedelete("users",$spic);
+	   echo 'BUYER table error';
+	   }
+	}
+    else
+	{
+		$user_home->filedelete("users",$spic);
+		echo 'error while image upload';
+	}
+
+
+
+
+
+
+
+?>
